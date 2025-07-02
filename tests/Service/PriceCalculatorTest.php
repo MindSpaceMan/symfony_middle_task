@@ -4,7 +4,7 @@ namespace App\Tests\Service;
 
 use App\Entity\Coupon;
 use App\Entity\Product;
-use App\Service\PriceCalculator;
+use App\Service\PriceCalculatorService;
 use Brick\Math\Exception\DivisionByZeroException;
 use Brick\Math\Exception\MathException;
 use Brick\Math\Exception\NumberFormatException;
@@ -15,11 +15,11 @@ use Brick\Money\Money;
 
 class PriceCalculatorTest extends TestCase
 {
-    private PriceCalculator $calculator;
+    private PriceCalculatorService $calculator;
 
     protected function setUp(): void
     {
-        $this->calculator = new PriceCalculator();
+        $this->calculator = new PriceCalculatorService();
     }
 
     /**

@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Money;
 
 use Brick\Math\BigDecimal;
+use Brick\Math\Exception\MathException;
 
-final class MoneyFormatter
+final readonly class MoneyFormatter
 {
     /**
-     * Форматирует `Money` в `float`
+     * Formatting `Money` to `float`
+     * @throws MathException
      */
     public function format(BigDecimal $money): int
     {

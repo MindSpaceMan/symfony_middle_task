@@ -6,5 +6,5 @@ nelmio_api_doc:
             version: 1.0.0
     areas: # to filter documented areas
         default:
-            path_patterns: [ '^/' ]
+            path_patterns: [ '^/api' ]
             host_patterns: [ ]

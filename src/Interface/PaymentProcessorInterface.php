@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Service\Payment;
+namespace App\Interface;
 
 interface PaymentProcessorInterface
 {
+    public function getAlias(): string;
     public function pay(int $priceInCents): bool;
 }

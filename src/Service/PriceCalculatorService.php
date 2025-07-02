@@ -14,10 +14,10 @@ use DomainException;
 use App\Entity\Product;
 use App\Entity\Coupon;
 
-final class PriceCalculator
+final readonly class PriceCalculatorService
 {
     /**
-     * Рассчитывает финальную цену продукта с учетом купона и налога.
+     * Calculates final price of product with the coupon and tax - if exists.
      *
      * @param Product $product
      * @param Coupon|null $coupon

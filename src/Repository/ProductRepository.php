@@ -16,4 +16,8 @@ final class ProductRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Product::class);
     }
+
+    public function ExampleMethodBySomething(string $something) {
+        return null;
+    }
 }

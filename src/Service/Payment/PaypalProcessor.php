@@ -3,14 +3,19 @@ declare(strict_types=1);
 
 namespace App\Service\Payment;
 
+use App\Enum\PaymentProcessor;
+use App\Interface\PaymentProcessorInterface;
 use Psr\Log\LoggerInterface;
 use Systemeio\TestForCandidates\PaymentProcessor\PaypalPaymentProcessor;
 
-final class PaypalPaymentProcessorAdapter implements PaymentProcessorInterface
+
+#[AsPaymentProcessor('paypal')]
+final readonly class PaypalProcessor implements PaymentProcessorInterface
 {
     public function __construct(
-        private readonly PaypalPaymentProcessor $paypalProcessor,
-        private readonly LoggerInterface $logger)
+        private PaypalPaymentProcessor $paypalProcessor,
+        private LoggerInterface $logger,
+    )
     {}
 
     /**
@@ -19,7 +24,6 @@ final class PaypalPaymentProcessorAdapter implements PaymentProcessorInterface
      */
     public function pay(int $priceInCents): bool
     {
-
         try {
             $this->paypalProcessor->pay($priceInCents);
             return true;
@@ -27,5 +31,10 @@ final class PaypalPaymentProcessorAdapter implements PaymentProcessorInterface
             $this->logger->error("Payment failed: " . $e->getMessage());
             return false;
         }
+    }
+
+    public function getAlias(): string
+    {
+        return PaymentProcessor::PAYPAL->value;
     }
 }

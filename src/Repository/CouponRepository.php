@@ -16,4 +16,8 @@ final class CouponRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Coupon::class);
     }
+
+    public function ExampleMethodBySomething(string $something) {
+        return null;
+    }
 }

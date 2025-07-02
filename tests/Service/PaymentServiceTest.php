@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
-use App\Service\Payment\PaymentProcessorInterface;
+use App\Interface\PaymentProcessorInterface;
 use App\Service\Payment\PaymentService;
 use PHPUnit\Framework\TestCase;
 

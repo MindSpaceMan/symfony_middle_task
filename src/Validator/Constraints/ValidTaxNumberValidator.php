@@ -6,7 +6,7 @@ namespace App\Validator\Constraints;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-class ValidTaxNumberValidator extends ConstraintValidator
+final class ValidTaxNumberValidator extends ConstraintValidator
 {
     public function validate(mixed $value, Constraint $constraint): void
     {

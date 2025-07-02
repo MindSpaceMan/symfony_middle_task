@@ -1,24 +1,28 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Service\Payment;
 
+use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
+use App\Enum\PaymentProcessor;
+use App\Interface\PaymentProcessorInterface;
 
-final class PaymentProcessorFactory
+final readonly class PaymentProcessorFactory
 {
     public function __construct(
-        private readonly PaymentService $paymentServicePaypal,
-        private readonly PaymentService $paymentServiceStripe
+        #[TaggedLocator(tag: 'app.payment_processor', indexAttribute: 'alias')]
+        private ContainerInterface $locator
     ) {}
 
-    public function getProcessor(string $type): PaymentService
+    public function getProcessor(PaymentProcessor $enum): PaymentProcessorInterface
     {
-        return match ($type) {
-            'paypal' => $this->paymentServicePaypal,
-            'stripe' => $this->paymentServiceStripe,
-            default => throw new UnprocessableEntityHttpException("Unknown payment processor: $type"),
-        };
+        $key = $enum->value;
+        if (!$this->locator->has($key)) {
+            throw new UnprocessableEntityHttpException("Unknown payment processor: $key");
+        }
+        /** @var PaymentProcessorInterface */
+        return $this->locator->get($key);
     }
 }

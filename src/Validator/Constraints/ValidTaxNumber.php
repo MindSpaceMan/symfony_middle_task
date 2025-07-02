@@ -7,7 +7,7 @@ use Attribute;
 use Symfony\Component\Validator\Constraint;
 
 #[Attribute]
-class ValidTaxNumber extends Constraint
+final class ValidTaxNumber extends Constraint
 {
     public string $message;
 
@@ -17,6 +17,6 @@ class ValidTaxNumber extends Constraint
     }
     public function validatedBy(): string
     {
-        return static::class.'Validator';
+        return ValidTaxNumber::class.'Validator';
     }
 }

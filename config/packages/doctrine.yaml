@@ -2,10 +2,11 @@ doctrine:
     dbal:
         driver: 'pdo_pgsql'
         url: '%env(resolve:DATABASE_URL)%'
-
-        # IMPORTANT: You MUST configure your server version,
-        # either here or in the DATABASE_URL env var (see .env file)
-        #server_version: '16'
+        types:
+            uuid: Ramsey\Uuid\Doctrine\UuidType
+            coupon_discount_enum: App\DBAL\Types\CouponDiscountEnumType
+        mapping_types:
+            coupon_discount_enum: coupon_discount_enum
 
         profiling_collect_backtrace: '%kernel.debug%'
         use_savepoints: true
@@ -23,7 +24,7 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
-
+    #server_version: '16'
 when@test:
     doctrine:
         dbal:

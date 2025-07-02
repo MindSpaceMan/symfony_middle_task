@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace App\Service\Payment;
 
-final class PaymentService
+use App\Interface\PaymentProcessorInterface;
+
+final readonly class PaymentService
 {
-    public function __construct(private readonly PaymentProcessorInterface $paymentProcessor)
+    public function __construct(private PaymentProcessorInterface $paymentProcessor)
     {
     }
 
