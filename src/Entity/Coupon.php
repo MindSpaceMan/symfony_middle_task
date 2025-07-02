@@ -22,7 +22,7 @@ class Coupon
     #[ORM\Column(length: 255, unique: true)]
     private ?string $code = null;
 
-    #[ORM\Column(type: 'coupon_discount_enum', enumType: CouponDiscountEnum::class)]
+    #[ORM\Column(type: 'coupon_discount_enum')]
     #[Assert\Choice(callback: [CouponDiscountEnum::class, 'values'])]
     private ?CouponDiscountEnum $discountType = null;
 

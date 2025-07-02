@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\DTO;
 
-use App\Enum\PaymentProcessor;
+use App\Enum\PaymentProcessorEnum;
 use OpenApi\Attributes\Property;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\Constraints\ValidTaxNumber;
@@ -26,7 +26,7 @@ final readonly class PurchaseRequest
         public string  $taxNumber,
 
         #[Assert\NotBlank]
-        #[Assert\Choice(callback: [PaymentProcessor::class, 'values'], message: 'Unknown payment processor')]
+        #[Assert\Choice(callback: [PaymentProcessorEnum::class, 'values'], message: 'Unknown payment processor')]
 
         #[Property(example: 'paypal|stripe')]
         public string  $paymentProcessor,

@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace App\Service\Payment;
 
-use App\Enum\PaymentProcessor;
+use App\Enum\PaymentProcessorEnum;
 use App\Interface\PaymentProcessorInterface;
 use Psr\Log\LoggerInterface;
 use Systemeio\TestForCandidates\PaymentProcessor\PaypalPaymentProcessor;
+use App\Attribute\AsPaymentProcessor;
 
 
 #[AsPaymentProcessor('paypal')]
@@ -35,6 +36,6 @@ final readonly class PaypalProcessor implements PaymentProcessorInterface
 
     public function getAlias(): string
     {
-        return PaymentProcessor::PAYPAL->value;
+        return PaymentProcessorEnum::PAYPAL->value;
     }
 }

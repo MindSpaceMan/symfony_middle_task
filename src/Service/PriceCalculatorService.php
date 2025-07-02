@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Enum\CouponDiscountEnum;
 use Brick\Math\BigDecimal;
 use Brick\Math\Exception\DivisionByZeroException;
 use Brick\Math\Exception\MathException;
@@ -48,16 +49,20 @@ final readonly class PriceCalculatorService
     }
 
     /**
-     * Применяет купон к базовой цене.
-     *
+     * @param BigDecimal $price
+     * @param Coupon $coupon
+     * @return BigDecimal
+     * @throws DivisionByZeroException
+     * @throws MathException
+     * @throws NumberFormatException
      * @throws RoundingNecessaryException
      */
     private function applyCoupon(BigDecimal $price, Coupon $coupon): BigDecimal
     {
-        return match ($coupon->getDiscountType()) {
-            'fixed' => $this->applyFixedDiscount($price, $coupon->getValue()),
-            'percent' => $this->applyPercentageDiscount($price, $coupon->getValue()),
-            default => throw new DomainException("Unknown discount type: {$coupon->getDiscountType()}"),
+        return match ($coupon->getDiscountType()->value) {
+            CouponDiscountEnum::FIXED->value => $this->applyFixedDiscount($price, $coupon->getValue()),
+            CouponDiscountEnum::PERCENT->value => $this->applyPercentageDiscount($price, $coupon->getValue()),
+            default => throw new DomainException("Unknown discount type: {$coupon->getDiscountType()->value}"),
         };
     }
 

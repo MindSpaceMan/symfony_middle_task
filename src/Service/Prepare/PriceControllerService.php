@@ -6,6 +6,7 @@ namespace App\Service\Prepare;
 use App\Controller\ResponseDTO\CalculatePriceResponse;
 use App\DTO\CalculatePriceRequest;
 use App\DTO\PurchaseRequest;
+use App\Enum\PaymentProcessorEnum;
 use App\Service\Entities\CouponService;
 use App\Service\Entities\ProductService;
 use App\Service\Money\MoneyFormatter;
@@ -45,7 +46,7 @@ final readonly class PriceControllerService
         $finalPrice = $this->calculatorService->calculatePrice($product, $coupon, $request->taxNumber);
 
         try {
-            $processorEnum = PaymentProcessor::from($request->paymentProcessor);
+            $processorEnum = PaymentProcessorEnum::from($request->paymentProcessor);
         } catch (\ValueError $e) {
             throw new UnprocessableEntityHttpException("Unknown payment processor: {$request->paymentProcessor}");
         }
