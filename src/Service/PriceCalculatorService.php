@@ -13,6 +13,7 @@ use Brick\Math\RoundingMode;
 use DomainException;
 use App\Entity\Product;
 use App\Entity\Coupon;
+use App\Enum\VatCountry;
 
 final readonly class PriceCalculatorService
 {
@@ -106,22 +107,14 @@ final readonly class PriceCalculatorService
     }
 
     /**
-     * Определяет ставку налога по префиксу налогового номера.
+     * Defines VAT on prefix tax number.
      */
-    private function getTaxRate(string $taxNumber): BigDecimal
+    private function getTaxRate(string $vat): BigDecimal
     {
-        // Если формат налогового номера некорректный, выбрасываем исключение.
-        if (!preg_match('/^[A-Z]{2}\d+$/', $taxNumber)) {
-            throw new DomainException("Unknown tax number format: {$taxNumber}");
+        try {
+            return VatCountry::fromVat($vat)->rate();
+        } catch (\ValueError|\DomainException $e) {
+            return BigDecimal::of(0);
         }
-
-        $prefix = substr($taxNumber, 0, 2);
-        return match ($prefix) {
-            'DE' => BigDecimal::of('0.19'),
-            'IT' => BigDecimal::of('0.22'),
-            'FR' => BigDecimal::of('0.20'),
-            'GR' => BigDecimal::of('0.24'),
-            default => BigDecimal::of(0),
-        };
     }
 }

@@ -14,11 +14,10 @@ final readonly class ProductService
     public function __construct(private ProductRepository $repository) {}
 
     /**
-     * Get product, exception to not found
+     * Get product
      */
     public function getProduct(string $productId): Product
     {
-        return $this->repository->findOneBy(['id' => $productId])
-            ?? throw new UnprocessableEntityHttpException("Product not found: $productId");
+        return $this->repository->find($productId);
     }
 }

@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraint;
 #[Attribute]
 final class ValidTaxNumber extends Constraint
 {
-    public string $message;
+    public string $message = 'Invalid tax number "{{ value }}".';
 
     public function __construct(array $options = [])
     {

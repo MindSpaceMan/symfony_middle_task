@@ -47,6 +47,18 @@
             "migrations/.gitignore"
         ]
     },
+    "happyr/entity-exists-validation-constraint": {
+        "version": "1.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "1.0",
+            "ref": "6bb4d395c4af35301599aec4f7b6810c3fb660cb"
+        },
+        "files": [
+            "config/packages/happyr_entity_exists_validator.yaml"
+        ]
+    },
     "nelmio/api-doc-bundle": {
         "version": "4.36",
         "recipe": {

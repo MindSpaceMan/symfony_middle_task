@@ -11,6 +11,7 @@ use App\Service\Entities\ProductService;
 use App\Service\Money\MoneyFormatter;
 use App\Service\Payment\PaymentProcessorFactory;
 use App\Service\PriceCalculatorService;
+use Symfony\Component\HttpFoundation\Response;
 
 final readonly class PriceControllerService
 {
@@ -54,7 +55,7 @@ final readonly class PriceControllerService
         if (!$paymentService->pay($finalPrice->toInt())) {
             return [
                 'json' => ['errors' => ['payment' => 'Payment failed']],
-                'code' => 422
+                'code' => Response::HTTP_UNPROCESSABLE_ENTITY,
             ];
         }
         return
@@ -63,7 +64,7 @@ final readonly class PriceControllerService
                     'status' => 'success',
                     'finalPrice' => $this->moneyFormatter->format($finalPrice)
                 ],
-                'code' => 200
+                'code' => Response::HTTP_OK,
             ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use App\Enum\VatCountry;
 
 final class ValidTaxNumberValidator extends ConstraintValidator
 {
@@ -14,19 +15,14 @@ final class ValidTaxNumberValidator extends ConstraintValidator
             return;
         }
 
-        $patterns = [
-            '/^DE\d{9}$/',           // Germany
-            '/^IT\d{11}$/',          // Italy
-            '/^GR\d{9}$/',           // Greece
-            '/^FR[a-zA-Z]{2}\d{9}$/' // France
-        ];
-
-        $valid = !empty(array_filter($patterns, fn($pattern) => preg_match($pattern, $value)));
-
-        if (!$valid) {
-            $this->context->buildViolation($constraint->message)
-                ->setParameter('{{ value }}', $value)
-                ->addViolation();
+        if (VatCountry::tryFromVat((string) $value) !== null) {
+            return;
         }
+
+
+        $this->context->buildViolation($constraint->message)
+            ->setParameter('{{ value }}', $value)
+            ->addViolation();
+
     }
 }

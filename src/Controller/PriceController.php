@@ -10,6 +10,7 @@ use App\DTO\PurchaseRequest;
 use App\Service\Prepare\PriceControllerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -28,8 +29,8 @@ final class PriceController extends AbstractController
     ): JsonResponse
     {
         return $this->json([
-                'finalPrice' => $this->priceControllerService->calculatePrice($http_response_header)
-            ]
+                'finalPrice' => $this->priceControllerService->calculatePrice($request),
+            ], Response::HTTP_OK
         );
     }
 

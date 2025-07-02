@@ -20,7 +20,6 @@ final readonly class CouponService
             return null;
         }
 
-        return $this->repository->findOneBy(['code' => $couponCode])
-            ?? throw new UnprocessableEntityHttpException("Coupon not found: $couponCode");
+        return $this->repository->findOneBy(['code' => $couponCode]);
     }
 }
