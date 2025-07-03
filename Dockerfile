@@ -16,6 +16,8 @@ USER app
 COPY --chown=app . /app
 WORKDIR /app
 
+COPY --chmod=0755 docker/wait-for.sh /usr/local/bin/wait-for.sh
+
 EXPOSE 8337
 
 CMD ["php", "-S", "0.0.0.0:8337", "-t", "public"]

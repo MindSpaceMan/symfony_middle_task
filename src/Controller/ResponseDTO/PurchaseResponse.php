@@ -15,12 +15,12 @@ final class PurchaseResponse extends OA\Post
     public function __construct()
     {
         parent::__construct(
-            summary: 'Осуществляет покупку продукта с проведением оплаты',
+            summary: 'Purchasing product with payment process',
 
             responses: [
                 new OA\Response(
                     response: 200,
-                    description: 'Покупка успешно завершена',
+                    description: 'Purchase successful',
                     content: new OA\JsonContent(
                         properties: [
                             new OA\Property(

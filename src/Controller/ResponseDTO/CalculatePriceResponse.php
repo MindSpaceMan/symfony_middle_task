@@ -15,12 +15,13 @@ final class CalculatePriceResponse extends OA\Post
     public function __construct()
     {
         parent::__construct(
-            summary: 'Рассчитывает цену продукта с учётом купона и налога',
+            description: 'Calculates product price in cents',
+            summary: 'Calculates product price with the possible coupon and tax',
 
             responses: [
                 new OA\Response(
                     response: 200,
-                    description: 'Цена успешно рассчитана',
+                    description: 'Final price in cents ',
                     content: new OA\JsonContent(
                         properties: [
                             new OA\Property(

@@ -24,8 +24,9 @@ class PriceCalculatorTest extends TestCase
     }
 
     /**
-     * Проверяем простой расчёт цены без купона и без налога
-     * (Допустим, если taxNumber неизвестной страны, налог = 0)
+     * Check usual price calculation without coupon and tax
+     * if taxNumber of unknown country - tax 0
+     * Throw exception on this or not - decide on talk
      */
     public function testCalculatePrice_NoTaxNoCoupon(): void
     {
@@ -36,11 +37,12 @@ class PriceCalculatorTest extends TestCase
             ->setName('TestProduct')
             ->setPrice(10000);
 
-        $finalPrice = $this->calculator->calculatePrice($product, null, 'XX123');
+        $this->calculator->calculatePrice($product, null, 'XX123');
+//        $this->assertSame(10000, $finalPrice->toInt(), 'Price should be same.');
     }
 
     /**
-     * Проверяем налог для Германии (19%)
+     * Germany check tax (19%)
      */
     public function testCalculatePrice_GermanyTax(): void
     {
@@ -50,12 +52,12 @@ class PriceCalculatorTest extends TestCase
 
         $finalPrice = $this->calculator->calculatePrice($product, null, 'DE123456789');
 
-        $this->assertSame(11900, $finalPrice->toInt(), 'Цена должна быть 119€ (100€ + 19%).');
+        $this->assertSame(11900, $finalPrice->toInt(), 'Price must be 119€ (100€ + 19%).');
     }
 
     /**
-     * Проверяем применение фиксированной скидки (coupon = "D15") на продукт
-     * и налог в Италии (22%)
+     * Check fixed coupon (coupon = "D15") on product
+     * + tax Italy (22%)
      * @throws RoundingNecessaryException
      * @throws DivisionByZeroException
      * @throws MathException
@@ -75,12 +77,12 @@ class PriceCalculatorTest extends TestCase
 
         $finalPrice = $this->calculator->calculatePrice($product, $coupon, 'IT12345678900');
 
-        // Расчёт: 10000 - 1500 = 8500; налог IT (22%) = 8500 * 0.22 = 1870; итого 8500 + 1870 = 10370.
-        $this->assertSame(10370, $finalPrice->toInt(), 'Ожидаемая цена: 10370.');
+        // 10000 - 1500 = 8500; tax IT (22%) = 8500 * 0.22 = 1870; summary: 8500 + 1870 = 10370.
+        $this->assertSame(10370, $finalPrice->toInt(), 'Expected price: 10370.');
     }
 
     /**
-     * Проверяем применение процентной скидки (coupon = "P10") и налог 24% (Греция)
+     * Check percent coupon = "P10" + tax 24% Greece
      */
     public function testCalculatePrice_PercentDiscount_Greece(): void
     {
@@ -90,12 +92,12 @@ class PriceCalculatorTest extends TestCase
 
         $finalPrice = $this->calculator->calculatePrice($product, $coupon, 'GR123456789');
 
-        // Расчёт: 2000 * 0.9 = 1800; налог GR (24%) = 1800 * 0.24 = 432; итого 1800 + 432 = 2232.
-        $this->assertSame(2232, $finalPrice->toInt(), 'Ожидаемая цена: 2232.');
+        // 2000 * 0.9 = 1800; tax GR (24%) = 1800 * 0.24 = 432; summary: 1800 + 432 = 2232.
+        $this->assertSame(2232, $finalPrice->toInt(), 'Expected price: 2232.');
     }
 
     /**
-     * Проверяем, что при 100% скидке цена не становится отрицательной.
+     * Check, that 100% discount price don't negative.
      */
     public function testCalculatePrice_100PercentCoupon(): void
     {
@@ -104,8 +106,8 @@ class PriceCalculatorTest extends TestCase
         $coupon = (new Coupon())->setCode('P100')->setDiscountType(CouponDiscountEnum::PERCENT)->setValue(10000);
 
         $finalPrice = $this->calculator->calculatePrice($product, $coupon, 'DE123456789');
-        // 10 -> скидка 100% -> 0, налог DE: 19% от 0 = 0
-        $this->assertSame(0, $finalPrice->toInt(), 'Цена после 100% скидки должна быть 0€.');
+        // 10 -> discount 100% -> 0, tax DE: 19% от 0 = 0
+        $this->assertSame(0, $finalPrice->toInt(), 'Price after 100% discount must 0€.');
     }
 
     public function testCalculatePrice_UnknownTaxNumber(): void

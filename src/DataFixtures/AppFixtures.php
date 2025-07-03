@@ -30,7 +30,7 @@ class AppFixtures extends Fixture
 
         $couponFixed = new Coupon();
         $couponFixed->setCode('D15');
-        $couponFixed->setDiscountType(CouponDiscountEnum::FIXED);// todo: enum
+        $couponFixed->setDiscountType(CouponDiscountEnum::FIXED);
         $couponFixed->setValue(1500);
         $manager->persist($couponFixed);
 

@@ -19,7 +19,6 @@ final class ValidTaxNumberValidator extends ConstraintValidator
             return;
         }
 
-
         $this->context->buildViolation($constraint->message)
             ->setParameter('{{ value }}', $value)
             ->addViolation();

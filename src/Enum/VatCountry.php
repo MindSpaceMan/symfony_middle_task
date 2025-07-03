@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Enum;
 
@@ -44,7 +45,7 @@ enum VatCountry: string
     }
 
     /** "Hard" definition of country by VAT number */
-    public static function fromVat(string $vat): self
+    public static function fromVat(string $vat): ?self
     {
         return self::tryFromVat($vat)
             ?? throw new \DomainException("Unknown tax number format: $vat");

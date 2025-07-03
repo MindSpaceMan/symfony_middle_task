@@ -28,9 +28,11 @@ final class PriceController extends AbstractController
         #[MapRequestPayload] CalculatePriceRequest $request
     ): JsonResponse
     {
-        return $this->json([
-                'finalPrice' => $this->priceControllerService->calculatePrice($request),
-            ], Response::HTTP_OK
+        return $this->json(
+            [
+                'finalPrice' => $this->priceControllerService->calculateProductPrice($request),
+            ],
+            Response::HTTP_OK
         );
     }
 
@@ -40,9 +42,10 @@ final class PriceController extends AbstractController
         #[MapRequestPayload] PurchaseRequest $request
     ): JsonResponse
     {
-
-        $purchaseResult = $this->priceControllerService->purchasePrice($request);
-
-        return $this->json($purchaseResult['json'], $purchaseResult['code']);
+        $purchaseResult = $this->priceControllerService->purchaseProduct($request);
+        return $this->json(
+            $purchaseResult['json'],
+            $purchaseResult['code']
+        );
     }
 }

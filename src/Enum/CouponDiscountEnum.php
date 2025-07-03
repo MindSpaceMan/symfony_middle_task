@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Enum;
 
@@ -11,5 +12,4 @@ enum CouponDiscountEnum: string
     {
         return array_map(fn(self $processor) => $processor->value, self::cases());
     }
-
 }

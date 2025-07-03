@@ -13,6 +13,7 @@ use App\Service\Money\MoneyFormatter;
 use App\Service\Payment\PaymentProcessorFactory;
 use App\Service\PriceCalculatorService;
 use Symfony\Component\HttpFoundation\Response;
+use ValueError;
 
 final readonly class PriceControllerService
 {
@@ -27,17 +28,18 @@ final readonly class PriceControllerService
     {
     }
 
-    public function calculatePrice(CalculatePriceRequest $request): int
+    public function calculateProductPrice(CalculatePriceRequest $request): int
     {
         $product = $this->productService->getProduct($request->product);
 
         $coupon = $this->couponService->getCoupon($request->couponCode);
 
         $finalPrice = $this->calculatorService->calculatePrice($product, $coupon, $request->taxNumber);
+
         return $this->moneyFormatter->format($finalPrice);
     }
 
-    public function purchasePrice(PurchaseRequest $request): array
+    public function purchaseProduct(PurchaseRequest $request): array
     {
         $product = $this->productService->getProduct($request->product);
 
@@ -47,7 +49,7 @@ final readonly class PriceControllerService
 
         try {
             $processorEnum = PaymentProcessorEnum::from($request->paymentProcessor);
-        } catch (\ValueError $e) {
+        } catch (ValueError $e) {
             throw new UnprocessableEntityHttpException("Unknown payment processor: {$request->paymentProcessor}");
         }
 

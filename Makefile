@@ -10,8 +10,8 @@ DC_EXEC = ${DC} exec sio_test
 help: ## This help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-init: down build install up success-message console ## Initialize environment
-
+init: down build install up migrate fixtures test success-message console ## Initialize environment
+#//migrate fixtures test
 build: ## Build services.
 	${DC} build $(c)
 
@@ -35,10 +35,15 @@ console: ## Login in console.
 install: ## Install dependencies without running the whole application.
 	${DC_RUN} composer install
 
+migrate: ## Run migrations
+	${DC_RUN} wait-for.sh database 5432 -- php bin/console doctrine:migrations:migrate --no-interaction
+
+fixtures: ## Load fixtures
+	${DC_RUN} wait-for.sh database 5432 -- php bin/console doctrine:fixtures:load --no-interaction
+
+test: ## Run tests
+	${DC_RUN} wait-for.sh database 5432 -- php bin/phpunit
+
 success-message:
 	@echo "You can now access the application at http://localhost:8337"
 	@echo "Good luck! 🚀"
-fixtures: ## Load fixtures into the database
-	${DC_RUN} php bin/console doctrine:fixtures:load --no-interaction
-test: ## Run PHPUnit tests
-	${DC_RUN} php bin/phpunit

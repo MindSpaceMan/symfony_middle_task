@@ -3,11 +3,8 @@ declare(strict_types=1);
 
 namespace App\Service\Entities;
 
-use App\Entity\Coupon;
 use App\Entity\Product;
-use App\Repository\CouponRepository;
 use App\Repository\ProductRepository;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 final readonly class ProductService
 {
@@ -16,8 +13,8 @@ final readonly class ProductService
     /**
      * Get product
      */
-    public function getProduct(string $productId): Product
+    public function getProduct(string $product): Product
     {
-        return $this->repository->find($productId);
+        return $this->repository->find($product);
     }
 }

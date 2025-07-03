@@ -15,6 +15,7 @@ use DomainException;
 use App\Entity\Product;
 use App\Entity\Coupon;
 use App\Enum\VatCountry;
+use function PHPUnit\Framework\returnArgument;
 
 final readonly class PriceCalculatorService
 {
@@ -39,20 +40,33 @@ final readonly class PriceCalculatorService
 
         $country = VatCountry::fromVat($vatNumber);
 
-        // Рассчитываем налог: налог = базовая цена * ставка налога (с округлением)
-        // Финальная цена = базовая цена + налог
+        // tax =  base price * tax rate (rounded)
+        // final price = base price + tax
         return $this->addVat($basePriceInCents, $country);
     }
 
-    private function addVat(BigDecimal $basePriceInCents, VatCountry $country): BigDecimal
+    private function addVat(BigDecimal $basePriceInCents, ?VatCountry $country): BigDecimal
     {
-        $vatAmount = $basePriceInCents
-            ->multipliedBy($country->rate())
-            ->toScale(0, RoundingMode::HALF_UP);
+        $vatAmount = null;
+        if ($country) {
+            $vatAmount = $basePriceInCents
+                ->multipliedBy($country->rate())
+                ->toScale(0, RoundingMode::HALF_UP);
+            return $basePriceInCents->plus($vatAmount);
+        }
 
-        return $basePriceInCents->plus($vatAmount);
+        return $basePriceInCents;
     }
 
+    /**
+     * @param BigDecimal $price
+     * @param Coupon|null $coupon
+     * @return BigDecimal
+     * @throws DivisionByZeroException
+     * @throws MathException
+     * @throws NumberFormatException
+     * @throws RoundingNecessaryException
+     */
     private function applyCoupon(BigDecimal $price, ?Coupon $coupon): BigDecimal
     {
         if ($coupon === null) {
@@ -60,11 +74,10 @@ final readonly class PriceCalculatorService
         }
 
         return match ($coupon->getDiscountType()) {
-            CouponDiscountEnum::FIXED   => $this->applyFixedDiscount(
+            CouponDiscountEnum::FIXED => $this->applyFixedDiscount(
                 $price,
                 $coupon->getValue()
             ),
-
             CouponDiscountEnum::PERCENT => $this->applyPercentageDiscount(
                 $price,
                 $coupon->getValue()
@@ -74,7 +87,7 @@ final readonly class PriceCalculatorService
     }
 
     /**
-     * Применяет фиксированную скидку.
+     * Applies fixed discount.
      *
      * @param BigDecimal $price Базовая цена в минорных единицах.
      * @param int $discountValue Фиксированная скидка в минорных единицах.
@@ -92,6 +105,13 @@ final readonly class PriceCalculatorService
         return $result->isLessThan(BigDecimal::of(0)) ? BigDecimal::of(0) : $result;
     }
 
+    /**
+     * Applies percent discount.
+     * @param BigDecimal $price
+     * @param int $discountBp
+     * @return BigDecimal
+     * @throws MathException
+     */
     private function applyPercentageDiscount(BigDecimal $price, int $discountBp): BigDecimal
     {
         if ($discountBp < 0 || $discountBp > 10_000) {
@@ -101,7 +121,7 @@ final readonly class PriceCalculatorService
         // net = price * (10000 - bp) / 10000
         $net = $price
             ->multipliedBy(10_000 - $discountBp)
-            ->dividedBy(10_000, 0, RoundingMode::HALF_UP); // scale 0 → копейки
+            ->dividedBy(10_000, 0, RoundingMode::HALF_UP); // scale 0 → cents
 
         // protection against negative value (in case of fp errors)
         return $net->isLessThan(BigDecimal::zero()) ? BigDecimal::zero() : $net;

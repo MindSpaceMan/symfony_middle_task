@@ -8,6 +8,7 @@ use App\Interface\PaymentProcessorInterface;
 use Psr\Log\LoggerInterface;
 use Systemeio\TestForCandidates\PaymentProcessor\PaypalPaymentProcessor;
 use App\Attribute\AsPaymentProcessor;
+use Exception;
 
 
 #[AsPaymentProcessor('paypal')]
@@ -28,7 +29,7 @@ final readonly class PaypalProcessor implements PaymentProcessorInterface
         try {
             $this->paypalProcessor->pay($priceInCents);
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error("Payment failed: " . $e->getMessage());
             return false;
         }

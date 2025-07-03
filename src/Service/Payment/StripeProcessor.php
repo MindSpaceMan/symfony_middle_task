@@ -10,6 +10,7 @@ use Systemeio\TestForCandidates\PaymentProcessor\StripePaymentProcessor;
 use App\Attribute\AsPaymentProcessor;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
+use Exception;
 
 #[AsPaymentProcessor('stripe')]
 final readonly class StripeProcessor implements PaymentProcessorInterface
@@ -32,7 +33,7 @@ final readonly class StripeProcessor implements PaymentProcessorInterface
                 $this->logger->error("Stripe Payment failed: Transaction declined.");
             }
             return $success;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error("Payment failed: " . $e->getMessage());
             return false;
         }

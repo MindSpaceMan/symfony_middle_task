@@ -10,7 +10,7 @@ use Brick\Math\Exception\MathException;
 final readonly class MoneyFormatter
 {
     /**
-     * Formatting `Money` to `float`
+     * Formatting `Money` to `int`
      * @throws MathException
      */
     public function format(BigDecimal $money): int

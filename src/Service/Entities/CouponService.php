@@ -5,14 +5,13 @@ namespace App\Service\Entities;
 
 use App\Entity\Coupon;
 use App\Repository\CouponRepository;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 final readonly class CouponService
 {
     public function __construct(private CouponRepository $repository) {}
 
     /**
-     * Get coupon, exception to not found
+     * Get coupon
      */
     public function getCoupon(?string $couponCode): ?Coupon
     {
