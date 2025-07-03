@@ -29,7 +29,7 @@ final readonly class PriceControllerService
 
     public function calculatePrice(CalculatePriceRequest $request): int
     {
-        $product = $this->productService->getProduct($request->productId);
+        $product = $this->productService->getProduct($request->product);
 
         $coupon = $this->couponService->getCoupon($request->couponCode);
 
@@ -39,7 +39,7 @@ final readonly class PriceControllerService
 
     public function purchasePrice(PurchaseRequest $request): array
     {
-        $product = $this->productService->getProduct($request->productId);
+        $product = $this->productService->getProduct($request->product);
 
         $coupon = $this->couponService->getCoupon($request->couponCode);
 

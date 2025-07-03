@@ -19,7 +19,6 @@ final readonly class PaymentProcessorFactory
     public function getProcessor(PaymentProcessorEnum $enum): PaymentProcessorInterface
     {
         $key = $enum->value;
-//        dd($this->locator->get($enum->value));
         if (!$this->locator->has($key)) {
             throw new UnprocessableEntityHttpException("Unknown payment processor: $key");
         }

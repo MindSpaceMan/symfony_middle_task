@@ -17,7 +17,7 @@ final readonly class CalculatePriceRequest
         #[Assert\Type('string')]
         #[EntityExist(entity: Product::class, property: 'id', message: 'Product not found')]
         #[Property(example: '1553a45e-f94c-412c-8ef6-a5d27f026e0d')]
-        public string  $productId,
+        public string  $product,
 
         #[Assert\NotBlank]
         #[ValidTaxNumber]

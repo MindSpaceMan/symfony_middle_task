@@ -26,3 +26,6 @@ services:
             tags:
                 - { name: 'app.payment_processor', alias: '%alias%' }
 
+
+    Systemeio\TestForCandidates\PaymentProcessor\PaypalPaymentProcessor: ~
+    Systemeio\TestForCandidates\PaymentProcessor\StripePaymentProcessor: ~

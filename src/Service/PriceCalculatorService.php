@@ -23,46 +23,53 @@ final readonly class PriceCalculatorService
      *
      * @param Product $product
      * @param Coupon|null $coupon
-     * @param string $taxNumber
+     * @param string $vatNumber
      * @return BigDecimal
      * @throws DivisionByZeroException
-     * @throws MathException
      * @throws NumberFormatException
      * @throws RoundingNecessaryException
      */
-    public function calculatePrice(Product $product, ?Coupon $coupon, string $taxNumber): BigDecimal
+    public function calculatePrice(Product $product, ?Coupon $coupon, string $vatNumber): BigDecimal
     {
-        // Предполагаем, что цена продукта хранится в минорных единицах (например, центах)
-        $basePrice = BigDecimal::of($product->getPrice());
+        $basePriceInCents = BigDecimal::of($product->getPrice());
 
         if ($coupon) {
-            $basePrice = $this->applyCoupon($basePrice, $coupon);
+            $basePriceInCents = $this->applyCoupon($basePriceInCents, $coupon);
         }
 
-        $taxRate = $this->getTaxRate($taxNumber);
+        $country = VatCountry::fromVat($vatNumber);
 
         // Рассчитываем налог: налог = базовая цена * ставка налога (с округлением)
-        $tax = $basePrice->multipliedBy($taxRate, RoundingMode::HALF_UP);
-
         // Финальная цена = базовая цена + налог
-        return $basePrice->plus($tax);
+        return $this->addVat($basePriceInCents, $country);
     }
 
-    /**
-     * @param BigDecimal $price
-     * @param Coupon $coupon
-     * @return BigDecimal
-     * @throws DivisionByZeroException
-     * @throws MathException
-     * @throws NumberFormatException
-     * @throws RoundingNecessaryException
-     */
-    private function applyCoupon(BigDecimal $price, Coupon $coupon): BigDecimal
+    private function addVat(BigDecimal $basePriceInCents, VatCountry $country): BigDecimal
     {
-        return match ($coupon->getDiscountType()->value) {
-            CouponDiscountEnum::FIXED->value => $this->applyFixedDiscount($price, $coupon->getValue()),
-            CouponDiscountEnum::PERCENT->value => $this->applyPercentageDiscount($price, $coupon->getValue()),
-            default => throw new DomainException("Unknown discount type: {$coupon->getDiscountType()->value}"),
+        $vatAmount = $basePriceInCents
+            ->multipliedBy($country->rate())
+            ->toScale(0, RoundingMode::HALF_UP);
+
+        return $basePriceInCents->plus($vatAmount);
+    }
+
+    private function applyCoupon(BigDecimal $price, ?Coupon $coupon): BigDecimal
+    {
+        if ($coupon === null) {
+            return $price;
+        }
+
+        return match ($coupon->getDiscountType()) {
+            CouponDiscountEnum::FIXED   => $this->applyFixedDiscount(
+                $price,
+                $coupon->getValue()
+            ),
+
+            CouponDiscountEnum::PERCENT => $this->applyPercentageDiscount(
+                $price,
+                $coupon->getValue()
+            ),
+            default => throw new DomainException("Unknown discount type: {$coupon->getDiscountType()->value}")
         };
     }
 
@@ -81,45 +88,22 @@ final readonly class PriceCalculatorService
     private function applyFixedDiscount(BigDecimal $price, int $discountValue): BigDecimal
     {
         $result = $price->minus(BigDecimal::of($discountValue));
-        // Если результат меньше 0, возвращаем 0.
+        // if result less than 0, return 0.
         return $result->isLessThan(BigDecimal::of(0)) ? BigDecimal::of(0) : $result;
     }
 
-    /**
-     * Применяет процентную скидку, гарантируя, что процент ≤ 100%.
-     *
-     * @param BigDecimal $price Базовая цена в минорных единицах.
-     * @param int $discountValue Скидка в базисных пунктах (например, 1000 = 10%, 10000 = 100%).
-     *
-     * @return BigDecimal
-     * @throws DivisionByZeroException
-     * @throws MathException
-     * @throws NumberFormatException
-     * @throws RoundingNecessaryException
-     */
-    private function applyPercentageDiscount(BigDecimal $price, int $discountValue): BigDecimal
+    private function applyPercentageDiscount(BigDecimal $price, int $discountBp): BigDecimal
     {
-        if ($discountValue > 10000) {
-            throw new DomainException("Discount percentage cannot be greater than 100%");
+        if ($discountBp < 0 || $discountBp > 10_000) {
+            throw new \DomainException('Discount percentage must be between 0% and 100%.');
         }
 
-        // Вычисляем множитель: (1 - скидка/10000)
-        $multiplier = BigDecimal::of(1)
-            ->minus(BigDecimal::of($discountValue)->dividedBy(10000, 2));
+        // net = price * (10000 - bp) / 10000
+        $net = $price
+            ->multipliedBy(10_000 - $discountBp)
+            ->dividedBy(10_000, 0, RoundingMode::HALF_UP); // scale 0 → копейки
 
-        $result = $price->multipliedBy($multiplier);
-        return $result->isLessThan(BigDecimal::of(0)) ? BigDecimal::of(0) : $result;
-    }
-
-    /**
-     * Defines VAT on prefix tax number.
-     */
-    private function getTaxRate(string $vat): BigDecimal
-    {
-        try {
-            return VatCountry::fromVat($vat)->rate();
-        } catch (\ValueError|\DomainException $e) {
-            return BigDecimal::of(0);
-        }
+        // protection against negative value (in case of fp errors)
+        return $net->isLessThan(BigDecimal::zero()) ? BigDecimal::zero() : $net;
     }
 }

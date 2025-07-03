@@ -6,6 +6,7 @@ namespace App\DBAL\Types;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 use App\Enum\CouponDiscountEnum;
+use Doctrine\DBAL\ParameterType;
 class CouponDiscountEnumType extends Type
 {
     public const NAME = 'coupon_discount_enum';

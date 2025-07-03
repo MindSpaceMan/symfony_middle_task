@@ -8,6 +8,8 @@ use App\Interface\PaymentProcessorInterface;
 use Psr\Log\LoggerInterface;
 use Systemeio\TestForCandidates\PaymentProcessor\StripePaymentProcessor;
 use App\Attribute\AsPaymentProcessor;
+use Brick\Math\BigDecimal;
+use Brick\Math\RoundingMode;
 
 #[AsPaymentProcessor('stripe')]
 final readonly class StripeProcessor implements PaymentProcessorInterface
@@ -23,8 +25,9 @@ final readonly class StripeProcessor implements PaymentProcessorInterface
     public function pay(int $priceInCents): bool
     {
         try {
-            $amount = bcdiv((string) $priceInCents, '100', 2);
-            $success = $this->stripeProcessor->processPayment((float) $amount);
+            $amount = BigDecimal::of($priceInCents);
+            $scaled = $amount->dividedBy('100', 2, RoundingMode::HALF_UP);
+            $success = $this->stripeProcessor->processPayment($scaled->toFloat());
             if (!$success) {
                 $this->logger->error("Stripe Payment failed: Transaction declined.");
             }

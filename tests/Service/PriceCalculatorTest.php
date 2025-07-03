@@ -4,6 +4,7 @@ namespace App\Tests\Service;
 
 use App\Entity\Coupon;
 use App\Entity\Product;
+use App\Enum\CouponDiscountEnum;
 use App\Service\PriceCalculatorService;
 use Brick\Math\Exception\DivisionByZeroException;
 use Brick\Math\Exception\MathException;
@@ -28,13 +29,14 @@ class PriceCalculatorTest extends TestCase
      */
     public function testCalculatePrice_NoTaxNoCoupon(): void
     {
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage('Unknown tax number format: XX123');
+
         $product = (new Product())
             ->setName('TestProduct')
             ->setPrice(10000);
 
         $finalPrice = $this->calculator->calculatePrice($product, null, 'XX123');
-
-        $this->assertSame(10000, $finalPrice->toInt(), 'Цена должна остаться без изменений.');
     }
 
     /**
@@ -68,7 +70,7 @@ class PriceCalculatorTest extends TestCase
         // Фиксированная скидка 15 (евро)
         $coupon = (new Coupon())
             ->setCode('D15')
-            ->setDiscountType('fixed')
+            ->setDiscountType(CouponDiscountEnum::FIXED)
             ->setValue(1500);
 
         $finalPrice = $this->calculator->calculatePrice($product, $coupon, 'IT12345678900');
@@ -84,7 +86,7 @@ class PriceCalculatorTest extends TestCase
     {
         $product = (new Product())->setName('Headphones')->setPrice(2000);
 
-        $coupon = (new Coupon())->setCode('P10')->setDiscountType('percent')->setValue(1000);
+        $coupon = (new Coupon())->setCode('P10')->setDiscountType(CouponDiscountEnum::PERCENT)->setValue(1000);
 
         $finalPrice = $this->calculator->calculatePrice($product, $coupon, 'GR123456789');
 
@@ -99,7 +101,7 @@ class PriceCalculatorTest extends TestCase
     {
         $product = (new Product())->setName('Case')->setPrice(1000);
 
-        $coupon = (new Coupon())->setCode('P100')->setDiscountType('percent')->setValue(10000);
+        $coupon = (new Coupon())->setCode('P100')->setDiscountType(CouponDiscountEnum::PERCENT)->setValue(10000);
 
         $finalPrice = $this->calculator->calculatePrice($product, $coupon, 'DE123456789');
         // 10 -> скидка 100% -> 0, налог DE: 19% от 0 = 0
