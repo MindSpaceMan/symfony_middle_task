@@ -1,0 +1,70 @@
+POST http://127.0.0.1:8337/purchase
+Accept: application/json
+Content-Type: application/json
+Content-Length: 105
+User-Agent: IntelliJ HTTP Client/PhpStorm 2025.1.0.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+{
+  "product": 1,
+  "taxNumber": "IT12345678900",
+  "couponCode": "D15",
+  "paymentProcessor": "paypal"
+}
+
+<> 2025-07-03T121255-1.404.json
+
+###
+
+POST http://127.0.0.1:8337/calculate-price
+Accept: application/json
+Content-Type: application/json
+Content-Length: 71
+User-Agent: IntelliJ HTTP Client/PhpStorm 2025.1.0.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+{
+  "product": 1,
+  "taxNumber": "DE123456789",
+  "couponCode": "D15"
+}
+
+<> 2025-07-03T121255.404.json
+
+###
+
+POST http://127.0.0.1:8337/purchase
+Accept: application/json
+Content-Type: application/json
+Content-Length: 105
+User-Agent: IntelliJ HTTP Client/PhpStorm 2024.2.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+{
+  "product": 1,
+  "taxNumber": "IT12345678900",
+  "couponCode": "D15",
+  "paymentProcessor": "paypal"
+}
+
+<> 2025-02-11T042701.500.json
+
+###
+
+POST http://127.0.0.1:8337/calculate-price
+Accept: application/json
+Content-Type: application/json
+Content-Length: 71
+User-Agent: IntelliJ HTTP Client/PhpStorm 2024.2.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+
+{
+  "product": 1,
+  "taxNumber": "DE123456789",
+  "couponCode": "D15"
+}
+
+<> 2025-02-11T042700.400.json
+
+###
+

@@ -1,0 +1,279 @@
+{
+  "type": "https:\/\/tools.ietf.org\/html\/rfc2616#section-10",
+  "title": "An error occurred",
+  "status": 500,
+  "detail": "Attempted to load class \"PaypalPaymentProcessor\" from namespace \"Systemeio\\TestForCandidates\".\nDid you forget a \"use\" statement for \"Systemeio\\TestForCandidates\\PaymentProcessor\\PaypalPaymentProcessor\"?",
+  "class": "Symfony\\Component\\ErrorHandler\\Error\\ClassNotFoundError",
+  "trace": [
+    {
+      "namespace": "",
+      "short_class": "",
+      "class": "",
+      "type": "",
+      "function": "",
+      "file": "\/app\/var\/cache\/dev\/ContainerAcrn1HS\/getPaymentServicepaymentServicePaypalService.php",
+      "line": 25,
+      "args": []
+    },
+    {
+      "namespace": "ContainerAcrn1HS",
+      "short_class": "getPaymentServicepaymentServicePaypalService",
+      "class": "ContainerAcrn1HS\\getPaymentServicepaymentServicePaypalService",
+      "type": "::",
+      "function": "do",
+      "file": "\/app\/var\/cache\/dev\/ContainerAcrn1HS\/App_KernelDevDebugContainer.php",
+      "line": 514,
+      "args": [
+        [
+          "object",
+          "ContainerAcrn1HS\\App_KernelDevDebugContainer"
+        ],
+        [
+          "boolean",
+          true
+        ]
+      ]
+    },
+    {
+      "namespace": "ContainerAcrn1HS",
+      "short_class": "App_KernelDevDebugContainer",
+      "class": "ContainerAcrn1HS\\App_KernelDevDebugContainer",
+      "type": "->",
+      "function": "load",
+      "file": "\/app\/vendor\/symfony\/dependency-injection\/Container.php",
+      "line": 404,
+      "args": [
+        [
+          "string",
+          "getPaymentServicepaymentServicePaypalService.php"
+        ]
+      ]
+    },
+    {
+      "namespace": "Symfony\\Component\\DependencyInjection",
+      "short_class": "Container",
+      "class": "Symfony\\Component\\DependencyInjection\\Container",
+      "type": "->",
+      "function": "getService",
+      "file": "\/app\/vendor\/symfony\/dependency-injection\/Argument\/ServiceLocator.php",
+      "line": 40,
+      "args": [
+        [
+          "string",
+          "privates"
+        ],
+        [
+          "string",
+          "App\\Service\\PaymentService $paymentServicePaypal"
+        ],
+        [
+          "string",
+          "getPaymentServicepaymentServicePaypalService"
+        ],
+        [
+          "boolean",
+          true
+        ]
+      ]
+    },
+    {
+      "namespace": "Symfony\\Component\\DependencyInjection\\Argument",
+      "short_class": "ServiceLocator",
+      "class": "Symfony\\Component\\DependencyInjection\\Argument\\ServiceLocator",
+      "type": "->",
+      "function": "get",
+      "file": "\/app\/vendor\/symfony\/http-kernel\/Controller\/ArgumentResolver\/ServiceValueResolver.php",
+      "line": 84,
+      "args": [
+        [
+          "string",
+          "paymentServicePaypal"
+        ]
+      ]
+    },
+    {
+      "namespace": "Symfony\\Component\\HttpKernel\\Controller\\ArgumentResolver",
+      "short_class": "ServiceValueResolver",
+      "class": "Symfony\\Component\\HttpKernel\\Controller\\ArgumentResolver\\ServiceValueResolver",
+      "type": "->",
+      "function": "resolve",
+      "file": "\/app\/vendor\/symfony\/http-kernel\/Controller\/ArgumentResolver\/TraceableValueResolver.php",
+      "line": 60,
+      "args": [
+        [
+          "object",
+          "Symfony\\Component\\HttpFoundation\\Request"
+        ],
+        [
+          "object",
+          "Symfony\\Component\\HttpKernel\\ControllerMetadata\\ArgumentMetadata"
+        ]
+      ]
+    },
+    {
+      "namespace": "Symfony\\Component\\HttpKernel\\Controller\\ArgumentResolver",
+      "short_class": "TraceableValueResolver",
+      "class": "Symfony\\Component\\HttpKernel\\Controller\\ArgumentResolver\\TraceableValueResolver",
+      "type": "->",
+      "function": "resolve",
+      "file": "\/app\/vendor\/symfony\/http-kernel\/Controller\/ArgumentResolver.php",
+      "line": 91,
+      "args": [
+        [
+          "object",
+          "Symfony\\Component\\HttpFoundation\\Request"
+        ],
+        [
+          "object",
+          "Symfony\\Component\\HttpKernel\\ControllerMetadata\\ArgumentMetadata"
+        ]
+      ]
+    },
+    {
+      "namespace": "Symfony\\Component\\HttpKernel\\Controller",
+      "short_class": "ArgumentResolver",
+      "class": "Symfony\\Component\\HttpKernel\\Controller\\ArgumentResolver",
+      "type": "->",
+      "function": "getArguments",
+      "file": "\/app\/vendor\/symfony\/http-kernel\/Controller\/TraceableArgumentResolver.php",
+      "line": 40,
+      "args": [
+        [
+          "object",
+          "Symfony\\Component\\HttpFoundation\\Request"
+        ],
+        [
+          "array",
+          [
+            [
+              "object",
+              "App\\Controller\\PriceController"
+            ],
+            [
+              "string",
+              "purchase"
+            ]
+          ]
+        ],
+        [
+          "object",
+          "ReflectionMethod"
+        ]
+      ]
+    },
+    {
+      "namespace": "Symfony\\Component\\HttpKernel\\Controller",
+      "short_class": "TraceableArgumentResolver",
+      "class": "Symfony\\Component\\HttpKernel\\Controller\\TraceableArgumentResolver",
+      "type": "->",
+      "function": "getArguments",
+      "file": "\/app\/vendor\/symfony\/http-kernel\/HttpKernel.php",
+      "line": 173,
+      "args": [
+        [
+          "object",
+          "Symfony\\Component\\HttpFoundation\\Request"
+        ],
+        [
+          "array",
+          [
+            [
+              "object",
+              "App\\Controller\\PriceController"
+            ],
+            [
+              "string",
+              "purchase"
+            ]
+          ]
+        ],
+        [
+          "object",
+          "ReflectionMethod"
+        ]
+      ]
+    },
+    {
+      "namespace": "Symfony\\Component\\HttpKernel",
+      "short_class": "HttpKernel",
+      "class": "Symfony\\Component\\HttpKernel\\HttpKernel",
+      "type": "->",
+      "function": "handleRaw",
+      "file": "\/app\/vendor\/symfony\/http-kernel\/HttpKernel.php",
+      "line": 76,
+      "args": [
+        [
+          "object",
+          "Symfony\\Component\\HttpFoundation\\Request"
+        ],
+        [
+          "integer",
+          1
+        ]
+      ]
+    },
+    {
+      "namespace": "Symfony\\Component\\HttpKernel",
+      "short_class": "HttpKernel",
+      "class": "Symfony\\Component\\HttpKernel\\HttpKernel",
+      "type": "->",
+      "function": "handle",
+      "file": "\/app\/vendor\/symfony\/http-kernel\/Kernel.php",
+      "line": 197,
+      "args": [
+        [
+          "object",
+          "Symfony\\Component\\HttpFoundation\\Request"
+        ],
+        [
+          "integer",
+          1
+        ],
+        [
+          "boolean",
+          true
+        ]
+      ]
+    },
+    {
+      "namespace": "Symfony\\Component\\HttpKernel",
+      "short_class": "Kernel",
+      "class": "Symfony\\Component\\HttpKernel\\Kernel",
+      "type": "->",
+      "function": "handle",
+      "file": "\/app\/vendor\/symfony\/runtime\/Runner\/Symfony\/HttpKernelRunner.php",
+      "line": 35,
+      "args": [
+        [
+          "object",
+          "Symfony\\Component\\HttpFoundation\\Request"
+        ]
+      ]
+    },
+    {
+      "namespace": "Symfony\\Component\\Runtime\\Runner\\Symfony",
+      "short_class": "HttpKernelRunner",
+      "class": "Symfony\\Component\\Runtime\\Runner\\Symfony\\HttpKernelRunner",
+      "type": "->",
+      "function": "run",
+      "file": "\/app\/vendor\/autoload_runtime.php",
+      "line": 29,
+      "args": []
+    },
+    {
+      "namespace": "",
+      "short_class": "",
+      "class": "",
+      "type": "",
+      "function": "require_once",
+      "file": "\/app\/public\/index.php",
+      "line": 5,
+      "args": [
+        [
+          "string",
+          "\/app\/vendor\/autoload_runtime.php"
+        ]
+      ]
+    }
+  ]
+}
