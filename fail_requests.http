@@ -1,0 +1,5 @@
+API-tests:
+	•	/products гость → без is_favorite, с image_url и images.
+	•	/products авторизованный → is_favorite корректен; фильтр favorite=1.
+	•	/favorites — те же сорт и фильтры, что /products.
+•	Ошибки: 401 на избранное гостем; 404 на несуществующий продукт.
