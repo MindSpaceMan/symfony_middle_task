@@ -1,0 +1,85 @@
+Имя:
+acme/app
+
+    1.	Правим библиотеку → тестируем её локально в проекте (path + dev-алиас).
+	2.	Тегируем релиз библиотеки (v1.2.3) и публикуем.
+	3.	Обновляем проект до тега, фиксируем composer.lock, PR проходит CI.
+	4.	Тег проекта → сборка → деплой → smoke-тесты → мониторинг/rollback.
+
+Легенда:
+	•   Проект acme/app зависит от библиотеки vendor/lib.
+	•	У библиотеки есть репозиторий (публичный Packagist или приватный репозиторий Composer).
+	•	В проекте есть CI (phpunit/phpstan/cs fixer), в деплое — сборка артефакта и composer install --no-dev.
+
+Разработка:
+    # форк/клонирование библиотеки
+    git clone git@github.com:your-org/lib.git
+    cd lib
+    git switch -c fix/edge-case         # или feature/...
+
+    # правки, тесты
+    composer install
+    composer test                        # phpunit
+    composer cs:fix || vendor/bin/php-cs-fixer fix
+    composer stan || vendor/bin/phpstan analyse
+
+    git add -A
+    git commit -m "Fix edge case in Foo::bar()"
+    git push -u origin fix/edge-case
+    # создаем PR → code review → merge → в main
+
+Интеграционное тестирование библиотеки в проекте:
+    cd ../app
+    # 2.1 Добавляем локальный источник библиотеки
+    composer config repositories.vendor-lib path ../lib --file composer.json
+
+    # 2.2 Подтягиваем ветку разработки (dev) c алиасом под текущий диапазон версий проекта
+    composer require vendor/lib:"dev-fix/edge-case as 1.2.99" -W
+    # (если проект требует ^1.2, алиас 1.2.99 удовлетворит constraint; включай "minimum-stability": "dev", "prefer-stable": true при необходимости)
+
+    # 2.3 Запуск тестов проекта
+    composer test
+    # + e2e/контрактные тесты, ручная проверка, профилирование при необходимости
+
+Релиз библиотеки:
+    # обновляем CHANGELOG, composer.json (при необходимости — branch-alias), готовим релиз
+    git switch main
+    git pull
+    # семантическая версия: патч (x.y.Z) / минор (x.Y.0) / мажор (X.0.0)
+    git tag -a v1.2.3 -m "v1.2.3 – fix edge case in Foo::bar()"
+    git push --tags
+
+Если пакет на Packagist — он подтянет новый тег автоматически (webhook).
+Для приватных репозиториев — публикуем в GitHub Packages / Satis / Private Packagist.
+
+Обновление зависимости в проекте:
+    cd ../app
+    # 4.1 Убираем временный path-репозиторий и dev-алиас
+    composer config --unset repositories.vendor-lib
+    # 4.2 Обновляем зависимость до релизной версии
+    composer require vendor/lib:^1.2.3 -W
+
+    # 4.3 Фиксируем lock-файл и изменения
+    git checkout -b chore/update-vendor-lib-1.2.3
+    git add composer.json composer.lock
+    git commit -m "chore(deps): bump vendor/lib to ^1.2.3"
+    git push -u origin chore/update-vendor-lib-1.2.3
+    # PR → CI (tests, static analysis) → merge в main
+
+Релиз проекта и деплой:
+    # В репозитории проекта:
+    git switch main && git pull
+    # выбираем новую версию проекта по SemVer
+    git tag -a v3.4.0 -m "Release v3.4.0: vendor/lib ^1.2.3"
+    git push --tags
+Собрать composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
+        php -r "opcache_reset();" || true
+Миграции / кэш (если Symfony) php bin/console doctrine:migrations:migrate --no-interaction
+                              php bin/console cache:clear --env=prod
+
+Далее:
+    Пакование артефакта (если деплой через архив/образ):
+	Docker image или tarball (в Docker: composer install в слое build, multi-stage).
+	Деплой на окружение (prod/stage).
+	Smoke-тесты / health-checks.
+	Мониторинг и возможность rollback (держим предыдущий тег и lock-файл; в случае отката — деплоим предыдущий артефакт).
